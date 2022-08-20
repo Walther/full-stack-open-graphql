@@ -1,0 +1,22 @@
+{
+  "name": "full-stack-open-graphql",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "apollo-server": "^3.10.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Walther/full-stack-open-graphql.git"
+  },
+  "author": "Walther",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/Walther/full-stack-open-graphql/issues"
+  },
+  "homepage": "https://github.com/Walther/full-stack-open-graphql#readme"
+}
