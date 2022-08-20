@@ -1,8 +1,7 @@
 const Authors = (props) => {
   if (!props.show) {
-    return null
+    return null;
   }
-  const authors = []
 
   return (
     <div>
@@ -14,8 +13,8 @@ const Authors = (props) => {
             <th>born</th>
             <th>books</th>
           </tr>
-          {authors.map((a) => (
-            <tr key={a.name}>
+          {props.authors.map((a) => (
+            <tr key={a.id}>
               <td>{a.name}</td>
               <td>{a.born}</td>
               <td>{a.bookCount}</td>
@@ -24,7 +23,7 @@ const Authors = (props) => {
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default Authors
+export default Authors;
