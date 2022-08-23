@@ -5,13 +5,14 @@ export const ALL_BOOKS = gql`
     allBooks {
       id
       title
+      published
+      genres
       author {
         id
         name
         born
         bookCount
       }
-      published
     }
   }
 `;
