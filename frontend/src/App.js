@@ -3,11 +3,12 @@ import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import Login from "./components/Login";
-import { useQuery, useApolloClient } from "@apollo/client";
+import { useQuery, useSubscription, useApolloClient } from "@apollo/client";
 import { ALL_AUTHORS } from "./queries/ALL_AUTHORS";
 import { ALL_BOOKS } from "./queries/ALL_BOOKS";
 import Recommendations from "./components/Recommendations";
 import { ME } from "./queries/ME";
+import { BOOK_ADDED } from "./queries/BOOK_ADDED";
 
 const App = () => {
   const [token, setToken] = useState(null);
@@ -37,6 +38,16 @@ const App = () => {
     }
     return <div style={{ color: "red" }}> {errorMessage} </div>;
   };
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const {
+        title,
+        author: { name },
+      } = subscriptionData.data.bookAdded;
+      notify(`A new book has been added: "${title}" by "${name}"`);
+    },
+  });
 
   return (
     <div>
