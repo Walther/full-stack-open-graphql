@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "../queries/LOGIN";
+import { ME } from "../queries/ME";
 
 const Login = ({ show, setError, setToken }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [login, result] = useMutation(LOGIN, {
+    refetchQueries: [{ query: ME }],
     onError: (error) => {
       setError(error.graphQLErrors[0].message);
     },

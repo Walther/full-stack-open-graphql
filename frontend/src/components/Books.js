@@ -28,7 +28,7 @@ const Books = ({ show, books }) => {
       <table>
         <tbody>
           <tr>
-            <th></th>
+            <th>title</th>
             <th>author</th>
             <th>published</th>
           </tr>
