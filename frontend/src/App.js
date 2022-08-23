@@ -2,46 +2,61 @@ import { useState } from "react";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
-import { gql, useQuery } from "@apollo/client";
-
-const ALL_AUTHORS = gql`
-  query {
-    allAuthors {
-      id
-      name
-      born
-      bookCount
-    }
-  }
-`;
-
-const ALL_BOOKS = gql`
-  query {
-    allBooks {
-      id
-      title
-      author
-      published
-    }
-  }
-`;
+import Login from "./components/Login";
+import { useQuery, useApolloClient } from "@apollo/client";
+import { ALL_AUTHORS } from "./queries/ALL_AUTHORS";
+import { ALL_BOOKS } from "./queries/ALL_BOOKS";
 
 const App = () => {
+  const [token, setToken] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [page, setPage] = useState("authors");
   const allAuthors = useQuery(ALL_AUTHORS);
   const allBooks = useQuery(ALL_BOOKS);
+  const client = useApolloClient();
+
+  const logout = () => {
+    setToken(null);
+    localStorage.clear();
+    client.resetStore();
+  };
+
+  const notify = (message) => {
+    setErrorMessage(message);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 10000);
+  };
+
+  const Notify = ({ errorMessage }) => {
+    if (!errorMessage) {
+      return null;
+    }
+    return <div style={{ color: "red" }}> {errorMessage} </div>;
+  };
 
   return (
     <div>
       <div>
         <button onClick={() => setPage("authors")}>authors</button>
         <button onClick={() => setPage("books")}>books</button>
-        <button onClick={() => setPage("add")}>add book</button>
+        {token ? (
+          <>
+            <button onClick={() => setPage("add")}>add book</button>
+            <button onClick={logout}>logout</button>
+          </>
+        ) : (
+          <button onClick={() => setPage("login")}>login</button>
+        )}
       </div>
+
+      <Notify errorMessage={errorMessage} />
 
       <Authors
         show={page === "authors"}
         authors={allAuthors.loading ? [] : allAuthors.data.allAuthors}
+        token={token}
+        setError={notify}
       />
 
       <Books
@@ -49,7 +64,9 @@ const App = () => {
         books={allBooks.loading ? [] : allBooks.data.allBooks}
       />
 
-      <NewBook show={page === "add"} />
+      <NewBook show={page === "add"} setError={notify} />
+
+      <Login show={page === "login"} setToken={setToken} setError={notify} />
     </div>
   );
 };

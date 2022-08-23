@@ -1,20 +1,15 @@
 import { useState } from "react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
+import { EDIT_AUTHOR_BIRTH } from "../queries/EDIT_AUTHOR_BIRTH";
 
-const EDIT_AUTHOR_BIRTH = gql`
-  mutation editAuthorBirth($name: String!, $year: Int!) {
-    editAuthor(name: $name, setBornTo: $year) {
-      id
-      name
-      born
-    }
-  }
-`;
-
-const Authors = (props) => {
+const Authors = ({ show, token, authors, setError }) => {
   const [selected, setSelected] = useState("");
   const [year, setYear] = useState("");
-  const [editAuthorBirth] = useMutation(EDIT_AUTHOR_BIRTH);
+  const [editAuthorBirth] = useMutation(EDIT_AUTHOR_BIRTH, {
+    onError: (error) => {
+      setError(error.graphQLErrors[0].message);
+    },
+  });
 
   const submit = async (event) => {
     event.preventDefault();
@@ -29,7 +24,7 @@ const Authors = (props) => {
     setSelected("");
   };
 
-  if (!props.show) {
+  if (!show) {
     return null;
   }
 
@@ -43,7 +38,7 @@ const Authors = (props) => {
             <th>born</th>
             <th>books</th>
           </tr>
-          {props.authors.map((a) => (
+          {authors.map((a) => (
             <tr key={a.id}>
               <td>{a.name}</td>
               <td>{a.born}</td>
@@ -52,28 +47,32 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <h2>set birthyear</h2>
-      <form onSubmit={submit}>
-        <select
-          value={selected}
-          onChange={({ target }) => setSelected(target.value)}
-        >
-          {props.authors.map((a) => (
-            <option value={a.name} key={a.id}>
-              {a.name}
-            </option>
-          ))}
-        </select>
-        <div>
-          born
-          <input
-            type="number"
-            value={year}
-            onChange={({ target }) => setYear(target.value)}
-          />
-        </div>
-        <button type="submit">update author</button>
-      </form>
+      {token && (
+        <>
+          <h2>set birthyear</h2>
+          <form onSubmit={submit}>
+            <select
+              value={selected}
+              onChange={({ target }) => setSelected(target.value)}
+            >
+              {authors.map((a) => (
+                <option value={a.name} key={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </select>
+            <div>
+              born
+              <input
+                type="number"
+                value={year}
+                onChange={({ target }) => setYear(target.value)}
+              />
+            </div>
+            <button type="submit">update author</button>
+          </form>
+        </>
+      )}
     </div>
   );
 };
